@@ -54,15 +54,22 @@ class PythonSecurityExamplesTest(unittest.TestCase):
             {"name": "Alice", "language": "Python"},
         )
 
-    def test_secure_password_digest_uses_salt_prefix(self) -> None:
-        insecure = examples.insecure_password_digest("ResearchPassword!")
-        secure = examples.secure_password_digest(
-            "ResearchPassword!",
-            salt=b"0123456789ABCDEF",
+    def test_report_signature_examples_show_weak_and_strong_crypto(self) -> None:
+        insecure = examples.insecure_report_signature("draft findings")
+        secure = examples.secure_report_signature(
+            "draft findings",
+            key=b"research-demo-key",
         )
 
         self.assertEqual(len(insecure), 32)
-        self.assertTrue(secure.startswith("30313233343536373839414243444546:"))
+        self.assertEqual(
+            insecure,
+            "e84186bc42ca4f4ae0cd30e87ff16b56",
+        )
+        self.assertEqual(
+            secure,
+            "14cb6a7bfead1f9f8482ef9c517eb113f345848eed780f1de7f02bc8c6bdd68b",
+        )
         self.assertGreater(len(secure), len(insecure))
 
     def test_secure_report_write_stays_in_directory_and_uses_0600(self) -> None:

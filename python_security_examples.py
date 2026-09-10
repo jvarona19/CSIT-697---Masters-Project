@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import base64
 import hashlib
+import hmac
 import json
 import os
 import pickle
-import secrets
 import sqlite3
 from pathlib import Path
 
@@ -49,14 +49,12 @@ def secure_load_profile(profile_json: str) -> dict:
     return json.loads(profile_json)
 
 
-def insecure_password_digest(password: str) -> str:
-    return hashlib.md5(password.encode("utf-8")).hexdigest()
+def insecure_report_signature(report_contents: str) -> str:
+    return hashlib.md5(report_contents.encode("utf-8")).hexdigest()
 
 
-def secure_password_digest(password: str, salt: bytes | None = None) -> str:
-    salt = salt or secrets.token_bytes(16)
-    digest = hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), salt, 200_000)
-    return f"{salt.hex()}:{digest.hex()}"
+def secure_report_signature(report_contents: str, key: bytes) -> str:
+    return hmac.new(key, report_contents.encode("utf-8"), "sha256").hexdigest()
 
 
 def insecure_save_report(filename: str, contents: str) -> Path:
@@ -101,8 +99,8 @@ def main() -> None:
     print()
 
     print("CWE-327 Broken or Risky Crypto")
-    print("Insecure:", insecure_password_digest("ResearchPassword!"))
-    print("Secure:", secure_password_digest("ResearchPassword!", salt=b"0123456789ABCDEF"))
+    print("Insecure:", insecure_report_signature("draft findings"))
+    print("Secure:", secure_report_signature("draft findings", key=b"research-demo-key"))
     print()
 
     print("CWE-22 Path Traversal / CWE-732 Incorrect Permission Assignment")

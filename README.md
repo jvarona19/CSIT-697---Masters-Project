@@ -7,7 +7,7 @@ Research project analyzing how GitHub Copilot, ChatGPT, and Claude Code impact s
 
 - **CWE-89**: SQL injection vs parameterized queries
 - **CWE-502**: unsafe deserialization with `pickle` vs JSON parsing
-- **CWE-327**: weak password hashing with MD5 vs salted PBKDF2-HMAC
+- **CWE-327**: weak report signing with MD5 vs keyed HMAC-SHA256
 - **CWE-22 / CWE-732**: path traversal and permissive file handling vs constrained writes with `0600` permissions
 
 Run the demo:
